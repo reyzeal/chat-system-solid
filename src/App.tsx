@@ -1,6 +1,7 @@
 import {createEffect, createSignal, For, Match, onMount, Show, Switch} from 'solid-js'
 import './App.css'
 import {createStore} from "solid-js/store";
+import {Icon} from "@iconify-icon/solid"
 interface Room {
     name: string
     id: number
@@ -125,8 +126,9 @@ function App() {
                     </div>}
                 </For>
             </div>
-            <div class={"absolute bottom-0 left-0 flex justify-center items-center p-2"}>
-                Case : <select class={"border rounded border-gray-400 p-2"} onchange={(e) => setSource(e.target.value || "")}>
+            <div class={"absolute bottom-10 flex flex-row gap-2 justify-center items-center p-2 w-full"}>
+                <p>Case</p>
+                <select class={"border rounded border-gray-400 p-2 flex-1 mr-2"} onchange={(e) => setSource(e.target.value || "")}>
                     <option selected={source().endsWith("chat_response.json")} value={"/chat_response.json"}>chat_response.json</option>
                     <option selected={source().endsWith("chat_modified.json")} value={"/chat_modified.json"}>chat_modified.json</option>
                     <option selected={source().endsWith("chat_extended.json")} value={"/chat_extended.json"}>chat_extended.json</option>
@@ -224,31 +226,35 @@ function App() {
                     </For>
                 </div>
                 <div class={"mt-auto"}>
-                    <div class="mx-4 mb-5">
-                        <input id={"chat"} type="text" class="w-full rounded-3xl border-2 border-gray-500 p-2" placeholder={"Type to chat"} onKeyUp={(e: KeyboardEvent) => {
+                    <form class="mx-4 mb-5 flex items-center space-x-2" onSubmit={(e) => {
+                        e.preventDefault();
+                        const input = e.target as HTMLFormElement;
+                        const formdata = new FormData(input);
+                        const chat = formdata.get("chat")
+                        if(input && chat && chat.toString().length) {
 
-                            if(e.code === "Enter") {
-                                let input = e.target as HTMLInputElement
-
-                                for(let i in data) {
-                                    if(data[i].room.id === selected()){
-                                        setData(
-                                            (x) => x.room.id === selected(),
-                                            "comments",
-                                            [...data[i].comments, {
-                                                id: Math.round(Math.random()*100000),
-                                                type: "text",
-                                                message: input.value,
-                                                sender: pov()
-                                            }]
-                                        )
-                                    }
+                            for(let i in data) {
+                                if(data[i].room.id === selected()){
+                                    setData(
+                                        (x) => x.room.id === selected(),
+                                        "comments",
+                                        [...data[i].comments, {
+                                            id: Math.round(Math.random()*100000),
+                                            type: "text",
+                                            message: chat?.toString().trim() || "",
+                                            sender: pov()
+                                        }]
+                                    )
                                 }
-                                input.value = ""
-
                             }
-                        }}/>
-                    </div>
+                            input.reset();
+                        }
+                    }}>
+                        <input id={"chat"} name={"chat"} type="text" class="w-full rounded-3xl border-2 border-gray-500 p-2" placeholder={"Type to chat"}/>
+                        <button type="submit">
+                            <Icon icon="material-symbols-light:send" width="40" height="40" />
+                        </button>
+                    </form>
                     <div class="bg-gray-500 text-white p-2">POV as :<select class="ml-5" onchange={e => setPov(e.target.value)}>
                         <For each={participants()}>
                             {(p) => <option selected={p.id === pov()} value={p.id}>{p.name}</option>}
