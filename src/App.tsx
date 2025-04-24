@@ -38,6 +38,7 @@ function App() {
     const [selected, setSelected] = createSignal(-1)
     const [room, setRoom] = createSignal({} as Room)
     const [source, setSource] = createSignal(getSourceParam() || "/chat_response.json")
+    const [detailOpen, setDetailOpen] = createSignal(false);
     // const [hash, setHash] = createSignal("")
     onMount(() => {
         fetch(source())
@@ -55,7 +56,11 @@ function App() {
             let select_chat = data.filter(x => x.room.id === selected())?.pop()
             if (select_chat) {
                 setChats(select_chat.comments)
-                setParticipants(select_chat.room.participant)
+                setParticipants(select_chat.room.participant.map((x,i) => {
+                    let temp = {...x}
+                    temp.avatar = `https://picsum.photos/id/${200+i}/100`
+                    return temp
+                }))
                 setRoom(select_chat.room)
                 if(!pov().length){
                     setPov(select_chat.room.participant[select_chat.room.participant.length-1].id)
@@ -77,6 +82,14 @@ function App() {
                 // setHash(JSON.stringify(payload[0]))
             })
     })
+    const getSenderName = (id : string)=> {
+        const sender = participants().find(x => x.id === id)
+        return sender ? sender.name : ""
+    }
+    const getSenderAvatar = (id : string)=> {
+        const sender = participants().find(x => x.id === id)
+        return sender ? sender.avatar : ""
+    }
 
   return (
     <div class="flex flex-row min-h-screen mx-5 bg-white">
@@ -124,7 +137,9 @@ function App() {
             {participants().length > 0 &&
             <>
 
-                <div class={"py-4 md:px-5 flex flex-row space-x-2 drop-shadow-sm drop-shadow-gray-400 bg-white border-b border-gray-200"}>
+                <div class={"py-4 md:px-5 cursor-pointer flex flex-row space-x-2 drop-shadow-sm drop-shadow-gray-400 bg-white border-b border-gray-200"} onclick={() => {
+                    setDetailOpen(true)
+                }}>
                     <button
                         onClick={() => setShowSidebar(true)}
                         class="md:hidden z-20 top-4 left-4 z-50 bg-white text-gray-800 p-2 rounded"
@@ -144,6 +159,10 @@ function App() {
                         </p>
                     </div>
 
+                    <div class="text-gray-600 hover:text-black text-xl p-2 ml-auto">
+                        ⋮
+                    </div>
+
                 </div>
                 <div class="flex flex-col space-y-3 mx-5 overflow-y-auto flex-1">
                     <For each={chats()}>
@@ -151,7 +170,15 @@ function App() {
                             "bg-gray-200 max-w-xs p-4 rounded-lg rounded-tl-none self-start animate-slide-in":
                             "bg-blue-500 text-white max-w-xs p-4 rounded-lg rounded-tr-none self-end animate-slide-in delay-100"
                         }>
-                            <p class={"font-semibold"}>{comment.sender}</p>
+
+                            <div class={"font-semibold mb-2 flex flex-row space-x-2 items-center border-b border-gray-300 pb-2"}>
+                                <img
+                                    width={100}
+                                    src={getSenderAvatar(comment.sender)}
+                                    class="w-8 h-8 rounded-full object-cover"
+                                />
+                                <p>{getSenderName(comment.sender)}</p>
+                            </div>
                             <p>{comment.message}</p>
                             <Show when={comment.type === "attachments" && comment.attachments}>
                                 <p class={`text-sm py-2 `+(pov() === comment.sender?"text-gray-200":"text-gray-600")}>{comment.attachments?.length} attachments</p>
@@ -227,6 +254,49 @@ function App() {
 
             </>}
         </section>
+
+        <Show when={detailOpen()}>
+            <div class="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+                    <button
+                        class="absolute top-2 right-2 text-gray-500 hover:text-black"
+                        onClick={() => setDetailOpen(false)}
+                    >
+                        ✖
+                    </button>
+
+                    <div class="flex items-center gap-4 mb-4">
+                        <img
+                            src={room().image_url}
+                            alt="Room"
+                            class="w-12 h-12 rounded-full object-cover"
+                        />
+                        <div>
+                            <p class="font-bold text-lg">{room().name}</p>
+                            <p class="text-sm text-gray-500">ID: {room().id}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold mb-2">Participants</p>
+                        <ul class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                            <For each={participants()}>
+                                {(user) => (
+                                    <li class="flex items-center gap-3">
+                                        <img
+                                            width={100}
+                                            src={user.avatar}
+                                            class="w-8 h-8 rounded-full object-cover"
+                                        />
+                                        <span>{user.name} - {user.id}</span>
+                                    </li>
+                                )}
+                            </For>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </Show>
     </div>
   )
 }
