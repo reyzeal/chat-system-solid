@@ -1,0 +1,7 @@
+name = "test-qiscus" # atau nama project kamu
+type = "javascript"
+
+compatibility_date = "2025-04-24"
+
+[site]
+bucket = "./dist"
