@@ -105,7 +105,7 @@ function App() {
             </div>
             <div class={"overflow-y-auto flex-1"}>
                 <For each={data}>
-                    {({room, comments}) => <div class={`flex border-y ${room.id == selected()?"bg-blue-500 text-white rounded-xl":""} border-gray-200 flex-row gap-2 p-2`}
+                    {({room, comments}) => <div class={`flex cursor-pointer border-y ${room.id == selected()?"bg-blue-500 text-white rounded-xl":""} border-gray-200 flex-row gap-2 p-2`}
                                                 onClick={() => {
                                                     setSelected(room.id);
                                                     console.log(room.id)
@@ -137,9 +137,7 @@ function App() {
             {participants().length > 0 &&
             <>
 
-                <div class={"py-4 md:px-5 cursor-pointer flex flex-row space-x-2 drop-shadow-sm drop-shadow-gray-400 bg-white border-b border-gray-200"} onclick={() => {
-                    setDetailOpen(true)
-                }}>
+                <div class={"py-4 md:px-5 flex flex-row space-x-2 drop-shadow-sm drop-shadow-gray-400 bg-white border-b border-gray-200"}>
                     <button
                         onClick={() => setShowSidebar(true)}
                         class="md:hidden z-20 top-4 left-4 z-50 bg-white text-gray-800 p-2 rounded"
@@ -151,15 +149,21 @@ function App() {
                         "background-size": "cover",
                         "background-repeat": "no-repeat",
                         "background-position": "center",
-                    }} class={`w-[50px] h-[50px] rounded-full overflow-hidden`}/>
-                    <div>
+                    }} class={`w-[50px] h-[50px] rounded-full overflow-hidden cursor-pointer`} onclick={() => {
+                        setDetailOpen(true)
+                    }}/>
+                    <div class="cursor-pointer" onclick={() => {
+                        setDetailOpen(true)
+                    }}>
                         <h1 class={"text-xl font-semibold"}>{room().name}</h1>
                         <p class="line-clamp-1 text-gray-600">
                             {participants().map(x => x.name).join(', ')}
                         </p>
                     </div>
 
-                    <div class="text-gray-600 hover:text-black text-xl p-2 ml-auto">
+                    <div class="text-gray-600 hover:text-black text-xl p-2 ml-auto cursor-pointer" onclick={() => {
+                        setDetailOpen(true)
+                    }}>
                         ⋮
                     </div>
 
@@ -194,7 +198,7 @@ function App() {
                                             <Match when={attachment.type === "pdf"}>
                                                 <a href={attachment.url} target="_blank">
                                                     <div class={`p-5 cursor-pointer hover:bg-${pov() != comment.sender?"gray":"blue"}-500 text-gray-600 hover:text-white text-center flex flex-col items-center`}>
-                                                        <img src={"/PDF_file_icon.svg.png"} width={100} alt=""/>
+                                                        <img src={"/PDF_file_icon.svg.png"} width={75} alt=""/>
                                                         <p class={""}>{attachment.path.split("/").pop()}</p>
                                                         <p>({formatBytes(attachment.size)})</p>
                                                     </div>
@@ -257,7 +261,7 @@ function App() {
 
         <Show when={detailOpen()}>
             <div class="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-                <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+                <div class="bg-white rounded-xl shadow-xl max-w-sm md:max-w-md w-full p-6 relative">
                     <button
                         class="absolute top-2 right-2 text-gray-500 hover:text-black"
                         onClick={() => setDetailOpen(false)}
