@@ -18,6 +18,16 @@ function getSourceParam() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("source");
 }
+function formatBytes(bytes: number, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 
 function App() {
     const [data, setData] = createStore([] as {room: Room, comments: Comment[]}[])
@@ -70,7 +80,7 @@ function App() {
 
   return (
     <div class="flex flex-row min-h-screen mx-5 bg-white">
-        <section  class={`fixed inset-y-0 left-0 z-40 bg-white w-2/3 sm:w-1/2 md:static md:z-0 md:flex md:w-1/3 flex-col min-h-screen px-2 py-3 border-r border-gray-200 transition-transform transform ${
+        <section  class={`fixed inset-y-0 left-0 z-40 bg-gray-100 w-2/3 sm:w-1/2 md:static md:z-0 md:flex md:w-1/3 flex-col min-h-screen px-2 py-3 border-r border-gray-200 transition-transform transform ${
             showSidebar() ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 h-screen`}>
 
@@ -144,14 +154,36 @@ function App() {
                             <p class={"font-semibold"}>{comment.sender}</p>
                             <p>{comment.message}</p>
                             <Show when={comment.type === "attachments" && comment.attachments}>
+                                <p class={`text-sm py-2 `+(pov() === comment.sender?"text-gray-200":"text-gray-600")}>{comment.attachments?.length} attachments</p>
+                                <hr class={"mb-4 "+(pov() === comment.sender?"text-gray-200":"text-gray-600")} />
                                 <For each={comment.attachments} fallback={<></>}>
                                     {attachment => <>
                                         <Switch>
                                             <Match when={attachment.type === "image"}>
-                                                <img src={attachment.url} alt="" />
+                                                <a href={attachment.url} target="_blank">
+                                                    <img src={attachment.url} alt="" class="mb-2 cursor-pointer" />
+                                                </a>
                                             </Match>
                                             <Match when={attachment.type === "pdf"}>
-                                                PDF
+                                                <a href={attachment.url} target="_blank">
+                                                    <div class={`p-5 cursor-pointer hover:bg-${pov() != comment.sender?"gray":"blue"}-500 text-gray-600 hover:text-white text-center flex flex-col items-center`}>
+                                                        <img src={"/PDF_file_icon.svg.png"} width={100} alt=""/>
+                                                        <p class={""}>{attachment.path.split("/").pop()}</p>
+                                                        <p>({formatBytes(attachment.size)})</p>
+                                                    </div>
+                                                </a>
+                                            </Match>
+                                            <Match when={attachment.type === "video"}>
+                                                <a href={attachment.url} target="_blank" class={"bg-white rounded-lg drop-shadow-gray-400 block mb-2"}>
+                                                    <div class={`p-5 cursor-pointer hover:bg-${pov() != comment.sender?"gray":"blue"}-500 text-gray-600 hover:text-white text-center flex flex-col items-center`}>
+                                                        <video controls width="320" class="rounded-lg shadow-md">
+                                                            <source src={attachment.url} type="video/mp4" />
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                        <p class={""}>{attachment.path.split("/").pop()}</p>
+                                                        <p>({formatBytes(attachment.size)})</p>
+                                                    </div>
+                                                </a>
                                             </Match>
                                         </Switch>
                                     </> }

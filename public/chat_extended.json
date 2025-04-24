@@ -50,6 +50,15 @@
               "size": 204800,
               "path": "/uploads/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTExL3JtNjA0LWVsZW1lbnQtMDYwMS5wbmc.webp",
               "url": "https://test-qiscus.reyzeal.com/uploads/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTExL3JtNjA0LWVsZW1lbnQtMDYwMS5wbmc.webp"
+            },
+            {
+              "id": 2,
+              "message_id": 885516,
+              "type": "image",
+              "mimetype": "image/webp",
+              "size": 204800,
+              "path": "/uploads/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTExL3JtNjA0LWVsZW1lbnQtMDYwMS5wbmc.webp",
+              "url": "https://test-qiscus.reyzeal.com/uploads/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTExL3JtNjA0LWVsZW1lbnQtMDYwMS5wbmc.webp"
             }
           ]
         },
@@ -98,7 +107,16 @@
           "sender": "agent@mail.com",
           "attachments": [
             {
-              "id": 2,
+              "id": 3,
+              "message_id": 885515,
+              "type": "pdf",
+              "mimetype": "application/pdf",
+              "size": 1024,
+              "path": "/uploads/dummy.pdf",
+              "url": "https://test-qiscus.reyzeal.com/uploads/dummy.pdf"
+            },
+            {
+              "id": 4,
               "message_id": 885515,
               "type": "pdf",
               "mimetype": "application/pdf",
@@ -113,6 +131,58 @@
           "type": "text",
           "message": "Baik, saya akan coba dan memberi feedback setelah mencobanya.",
           "sender": "customer@mail.com"
+        }
+      ]
+    },
+    {
+      "room": {
+        "name": "Product C",
+        "id": 12458,
+        "image_url": "https://picsum.photos/id/238/200/300",
+        "participant": [
+          { "id": "admin@mail.com", "name": "Admin", "role": 0 },
+          { "id": "agent@mail.com", "name": "Agent A", "role": 1 },
+          { "id": "customer@mail.com", "name": "king customer", "role": 2 }
+        ]
+      },
+      "comments": [
+        {
+          "id": 885520,
+          "type": "text",
+          "message": "Saya ingin mengirimkan video penjelasan masalah yang saya alami.",
+          "sender": "customer@mail.com"
+        },
+        {
+          "id": 885521,
+          "type": "attachments",
+          "message": "Berikut video yang menjelaskan masalahnya.",
+          "sender": "customer@mail.com",
+          "attachments": [
+            {
+              "id": 5,
+              "message_id": 885521,
+              "type": "video",
+              "mimetype": "video/mp4",
+              "size": 512000,
+              "path": "/uploads/6557767-uhd_4096_2160_25fps.mp4",
+              "url": "/uploads/6557767-uhd_4096_2160_25fps.mp4"
+            },
+            {
+              "id": 6,
+              "message_id": 885521,
+              "type": "video",
+              "mimetype": "video/mp4",
+              "size": 768000,
+              "path": "/uploads/6557767-uhd_4096_2160_25fps.mp4",
+              "url": "/uploads/6557767-uhd_4096_2160_25fps.mp4"
+            }
+          ]
+        },
+        {
+          "id": 885522,
+          "type": "text",
+          "message": "Terima kasih atas videonya, saya akan cek dan bantu segera.",
+          "sender": "agent@mail.com"
         }
       ]
     }
